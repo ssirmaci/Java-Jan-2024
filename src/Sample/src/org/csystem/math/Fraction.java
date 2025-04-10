@@ -142,108 +142,167 @@ public class Fraction {
 package org.csystem.math;
 
 public class Fraction {
+    private int m_a;
+    private int m_b;
+    static final double DELTA = 0.000001;
+
+    private static int ebob(int a, int b) {
+        return b == 0 ? Math.abs(a) : ebob(b, a % b);
+    }
+
+    private void simplfy() {
+        int ebobValue = ebob(m_a, m_b);
+        m_a /= ebobValue;
+        m_b /= ebobValue;
+
+        if(m_b < 0) {
+            m_a = -m_a;
+            m_b = -m_b;
+        }
+    }
+
     public Fraction()
     {
-        throw new UnsupportedOperationException("TODO:");
+        this(0,1);
     }
 
     public Fraction(int a)
     {
-        throw new UnsupportedOperationException("TODO:");
+        this(a,1);
     }
 
     public Fraction(int a, int b)
     {
-        throw new UnsupportedOperationException("TODO:");
+        if(b == 0) {
+            System.out.println("Payda 0 olması nedeniyle, program sonlandırılıyor...");
+            System.exit(1);
+        }
+
+        if(a == 0)
+            b = 1;
+
+        m_a = a;
+        m_b = b;
+
+        simplfy();
+
     }
 
     public int getNumerator()
     {
-        throw new UnsupportedOperationException("TODO:");
+        return m_a;
     }
 
     public void setNumerator(int val)
     {
-        throw new UnsupportedOperationException("TODO:");
+        m_a = val;
+        simplfy();
     }
 
     public int getDenominator()
     {
-        throw new UnsupportedOperationException("TODO:");
+        return m_b;
     }
 
     public void setDenominator(int val)
     {
-        throw new UnsupportedOperationException("TODO:");
+        if(val == 0) {
+            System.out.println("Payda 0 olması nedeniyle, program sonlandırılıyor...");
+            System.exit(1);
+        }
+        m_b = val;
+        simplfy();
     }
 
     public double getRealValue()
     {
-        throw new UnsupportedOperationException("TODO:");
+        return (double)m_a/m_b;
+
     }
 
     public Fraction add(Fraction other)
     {
-        throw new UnsupportedOperationException("TODO:");
+        return new Fraction((this.m_a * other.m_b) + (other.m_a * this.m_b),this.m_b * other.m_b );
+
     }
 
     public Fraction add(int val)
     {
-        throw new UnsupportedOperationException("TODO:");
+        return new Fraction(this.m_a + (val * this.m_b),this.m_b);
+
     }
 
     public Fraction subtract(Fraction other)
     {
-        throw new UnsupportedOperationException("TODO:");
+        return new Fraction((this.m_a * other.m_b) - (other.m_a * this.m_b), this.m_b * other.m_b);
+
     }
 
     public Fraction subtract(int val)
     {
-        throw new UnsupportedOperationException("TODO:");
+        Fraction other = new Fraction();
+        other.m_a = val * this.m_b;
+        return new Fraction(this.m_a - other.m_a, this.m_b);
+
     }
+
 
     public Fraction multiply(Fraction other)
     {
-        throw new UnsupportedOperationException("TODO:");
+        return new Fraction(this.m_a * other.m_a, this.m_b * other.m_b);
+
     }
 
     public Fraction multiply(int val)
     {
-        throw new UnsupportedOperationException("TODO:");
+        return new Fraction(this.m_a * val,this.m_b);
+
     }
 
     public Fraction divide(Fraction other)
     {
-        throw new UnsupportedOperationException("TODO:");
+        int i = other.m_a;
+        other.m_a = other.m_b;
+        other.m_b = i;
+
+        return this.multiply(other);
+
     }
 
     public Fraction divide(int val)
     {
-        throw new UnsupportedOperationException("TODO:");
+        Fraction other = new Fraction(this.m_b,val * this.m_b );
+
+        return this.multiply(other);
     }
 
     public void inc()
     {
-        throw new UnsupportedOperationException("TODO:");
+        Fraction add = this.add(1);
+        this.m_a= add.m_a;
+        this.m_b= add.m_b;
     }
 
     public void dec()
     {
-        throw new UnsupportedOperationException("TODO:");
+        Fraction add = this.subtract(1);
+        this.m_a= add.m_a;
+        this.m_b= add.m_b;
     }
 
     public int compareTo(Fraction other)
     {
-        throw new UnsupportedOperationException("TODO:");
+
+        return Integer.compare(this.m_a * other.m_b, other.m_a * this.m_b);
     }
 
-    public boolean equals()
+    public boolean equals(Fraction other)
     {
-        throw new UnsupportedOperationException("TODO:");
+        return other instanceof Fraction && Math.abs(this.m_a - other.m_a) < DELTA && Math.abs(this.m_b - other.m_b) < DELTA;
     }
 
     public String toString()
     {
-         throw new UnsupportedOperationException("TODO:");
+        return "%d / %d kesri için -> %d/%d = %.6f".formatted(m_a, m_b, m_a, m_b, getRealValue());
     }
 }
